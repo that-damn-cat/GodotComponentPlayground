@@ -46,7 +46,7 @@ func damage(amount: int) -> void:
 		damaged.emit(original_health - current_health)
 
 
-# Restores health
+## Restores health
 func heal(amount: int) -> void:
 	var original_health = current_health
 	set_health(current_health + amount)
@@ -55,7 +55,7 @@ func heal(amount: int) -> void:
 		damaged.emit(current_health - original_health)
 
 
-# Directly sets the health amount
+## Directly sets the health amount
 func set_health(amount) -> void:
 	_current_health = amount
 
