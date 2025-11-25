@@ -65,8 +65,15 @@ func remove_state(state_to_remove: State) -> void:
 	if not states.has(state_to_remove.state_name):
 		return
 
+	# Remove references to the removed state in previous/initial
+	if state_to_remove == previous_state:
+		previous_state = null
+
+	if state_to_remove == initial_state:
+		initial_state = null
+
 	# If we are removing the current state, try to handle it gracefully.
-	if current_state == state_to_remove:
+	if state_to_remove == current_state:
 		if previous_state:
 			change_state(previous_state.state_name)
 		elif initial_state:
