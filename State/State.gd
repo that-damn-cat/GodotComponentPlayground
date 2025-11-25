@@ -40,3 +40,7 @@ func update(_delta: float) -> void:
 
 func physics_update(_delta: float) -> void:
 	pass
+
+func _exit_tree() -> void:
+	if state_machine:
+		state_machine.remove_state(self)
