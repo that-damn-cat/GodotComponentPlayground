@@ -1,3 +1,6 @@
+## Spawner implementation of a Timer. Can autospawn on timer completion or used as
+## a spawn "cooldown" with try_spawn.
+
 @icon("./riposte.svg")
 class_name Spawner
 extends Timer
@@ -7,14 +10,18 @@ signal spawned(entity: Node)
 
 ## Scene to Spawn
 @export var scene_to_spawn: PackedScene
+
 ## Scene will be spawned as a child of this Marker2D
 @export var spawn_position: Marker2D
+
 ## When true, spawns automatically when timer complete.
 @export var auto_spawn: bool
 
 ## If set, this function is called when spawning an entity.
 ## It must take the spawned node as its only parameter.
 var spawn_function: Callable = Callable()
+
+## Whether or not a spawn request would currently succeed
 var can_spawn: bool = true
 
 
