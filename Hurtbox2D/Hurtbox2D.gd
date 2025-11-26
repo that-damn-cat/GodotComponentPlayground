@@ -1,8 +1,12 @@
+## Hurtbox implementation of an Area2D. If it collides with a Hitbox2D
+## it will transfer the damage to a given HealthComponent.
+## Negative damage values will heal the HealthComponent instead.
+
 @icon("./targeted.svg")
 class_name Hurtbox2D
 extends Area2D
 
-#drag and drop in the healthcomponent or the HEART of the entity
+## HealthComponent that accepts damage
 @export var health: HealthComponent
 
 
@@ -10,7 +14,6 @@ func _ready() -> void:
 	area_entered.connect(_on_hit)
 
 
-#did a hitbox touch me? noooooooooooo
 func _on_hit(area: Area2D) -> void:
 	if area is Hitbox2D:
 		# We can use negative "damage" to heal
