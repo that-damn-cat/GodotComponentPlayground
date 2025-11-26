@@ -7,7 +7,7 @@ extends VisibleOnScreenNotifier2D
 var _wasVisible: bool = false
 @onready var _parent: Node = get_parent()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not is_on_screen():
 		if _wasVisible:
 			_parent.queue_free()
