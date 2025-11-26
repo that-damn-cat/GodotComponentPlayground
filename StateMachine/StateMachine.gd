@@ -1,16 +1,32 @@
+## A Node based state machine that manages State children and handles transitions
+
 @tool
 @icon("./gears.svg")
 class_name StateMachine
 extends Node
 
+## Emitted when a state transition occurs
 signal state_changed(old: State, new: State)
+
+## The state set at _ready
 @export var initial_state: State
+
+## Dictionary of currently configured states
 var states: Dictionary[StringName, State] = { }
+
+## Current state
 var current_state: State
+
+## Last running state
 var previous_state: State
 
 
 func _enter_tree() -> void:
+	if Engine.is_editor_hint():
+		return
+
+	states = { }
+
 	for child in get_children():
 		if child is State:
 			add_state(child)
