@@ -1,3 +1,5 @@
+## Node for tracking a Health value
+
 @icon("./heart.svg")
 class_name HealthComponent
 extends Node
@@ -11,6 +13,7 @@ signal healed(amount: int)
 ## Emits on damage if actual damage dealt > 0
 signal damaged(amount: int)
 
+## Health is clamped with this as it's maximum
 @export var max_health: int
 
 ## internal representation of actual health value. Use current_health instead.
