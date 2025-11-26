@@ -1,5 +1,6 @@
 ## An implementation of AudioStreamPlayer that randomizes its own pitch to
 ## reduce the impact of repetitive sounds.
+
 @icon("./amplitude.svg")
 class_name AudioJitterPlayer
 extends AudioStreamPlayer
