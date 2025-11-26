@@ -4,8 +4,14 @@
 
 # Godot-specific ignores
 .import/
+*.import
 export.cfg
 export_credentials.cfg
+export_presets.cfg
+
+# Build / export outputs
+.export/
+build/
 
 # Imported translations (automatically generated from CSV files)
 *.translation
@@ -14,3 +20,18 @@ export_credentials.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+# Editor/project user files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS / editor temp files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+*.tmp
+*.log
+.cache/
