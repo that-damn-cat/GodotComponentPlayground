@@ -1,8 +1,10 @@
+## A Timer that calls queue_free on its parent when the timer completes
+
 @icon("./stopwatch.svg")
 class_name FreeTimer
 extends Timer
 
-@onready var parent_node = get_parent()
+@onready var _parent = get_parent()
 
 
 func _ready() -> void:
@@ -10,4 +12,4 @@ func _ready() -> void:
 
 
 func _on_timeout() -> void:
-	parent_node.queue_free()
+	_parent.queue_free()
