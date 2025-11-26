@@ -29,12 +29,13 @@ func _notification(what: int) -> void:
 			NOTIFICATION_EDITOR_POST_SAVE,
 	]
 
-	if state_name == "":
-		state_name = name.to_lower()
-		notify_property_list_changed()
+	if Engine.is_editor_hint():
+		if state_name == "":
+			state_name = name.to_lower()
+			notify_property_list_changed()
 
-	if Engine.is_editor_hint() and what in triggers:
-		update_configuration_warnings()
+		if what in triggers:
+			update_configuration_warnings()
 
 
 ## To be implemented by the inheriting node. Called when the state is first entered.
@@ -58,7 +59,7 @@ func physics_update(_delta: float) -> void:
 
 
 ## Emit the transitioned signal
-func transition(new_state_name: String) -> void:
+func transition_to(new_state_name: String) -> void:
 	transitioned.emit(self, new_state_name)
 
 
