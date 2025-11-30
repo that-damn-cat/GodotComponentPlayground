@@ -16,6 +16,9 @@ signal damaged(amount: int)
 ## Health is clamped with this as it's maximum
 @export var max_health: int
 
+## Whether or not negative damage heals/negative healing damages
+@export var allow_negative_amounts: bool = false
+
 ## internal representation of actual health value. Use current_health instead.
 var _current_health : int
 
@@ -42,6 +45,13 @@ func full_heal() -> void:
 
 ## Subtracts health
 func damage(amount: int) -> void:
+	if amount < 0:
+		if not allow_negative_amounts:
+			return
+
+		heal(abs(amount))
+		return
+
 	var original_health = current_health
 	set_health(current_health - amount)
 
@@ -51,6 +61,13 @@ func damage(amount: int) -> void:
 
 ## Restores health
 func heal(amount: int) -> void:
+	if amount < 0:
+		if not allow_negative_amounts:
+			return
+
+		damage(abs(amount))
+		return
+
 	var original_health = current_health
 	set_health(current_health + amount)
 
