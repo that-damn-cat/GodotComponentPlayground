@@ -8,22 +8,22 @@ extends Node
 signal died
 
 ## Emits on heal or full heal if actual amount healed > 0
-signal healed(amount: int)
+signal healed(amount: float)
 
 ## Emits on damage if actual damage dealt > 0
-signal damaged(amount: int)
+signal damaged(amount: float)
 
 ## Health is clamped with this as it's maximum
-@export var max_health: int
+@export var max_health: float
 
 ## Whether or not negative damage heals/negative healing damages
 @export var allow_negative_amounts: bool = false
 
 ## internal representation of actual health value. Use current_health instead.
-var _current_health : int
+var _current_health : float
 
 ## Current health value. Changing this runs the appropriate checks automatically.
-var current_health: int:
+var current_health: float:
 	get:
 		return _current_health
 	set(new_health):
@@ -36,7 +36,7 @@ func _ready() -> void:
 
 ## Sets health amount to max for full healing
 func full_heal() -> void:
-	var original_health := current_health
+	var original_health: float = current_health
 	set_health(max_health)
 
 	if current_health > original_health:
@@ -44,7 +44,7 @@ func full_heal() -> void:
 
 
 ## Subtracts health
-func damage(amount: int) -> void:
+func damage(amount: float) -> void:
 	if amount < 0:
 		if not allow_negative_amounts:
 			return
@@ -52,7 +52,7 @@ func damage(amount: int) -> void:
 		heal(abs(amount))
 		return
 
-	var original_health = current_health
+	var original_health: float = current_health
 	set_health(current_health - amount)
 
 	if current_health < original_health:
@@ -60,7 +60,7 @@ func damage(amount: int) -> void:
 
 
 ## Restores health
-func heal(amount: int) -> void:
+func heal(amount: float) -> void:
 	if amount < 0:
 		if not allow_negative_amounts:
 			return
@@ -68,7 +68,7 @@ func heal(amount: int) -> void:
 		damage(abs(amount))
 		return
 
-	var original_health = current_health
+	var original_health: float = current_health
 	set_health(current_health + amount)
 
 	if current_health > original_health:
