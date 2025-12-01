@@ -10,6 +10,7 @@ signal transitioned(this_state: State, new_state_name: String)
 ## The state name used to find this state in the StateMachine
 @export var state_name: String = name.to_lower()
 
+## Holds a reference to the StateMachine that controls this State
 var state_machine: StateMachine
 
 
