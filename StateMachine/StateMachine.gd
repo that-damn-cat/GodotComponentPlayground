@@ -68,9 +68,8 @@ func add_state(new_state: State) -> void:
 	new_state.transitioned.connect(_on_state_transitioned)
 
 ## Removes a given state from the State Machine, leaving it in the tree.
-## If the removed state is the current state, transitions to the previous state.
-## If there is no previous state, transitions to the initial state.
-## Finally, if there is no initial state, the StateMachine will have no current state.
+## If the removed state is the current state, becomes stateless.
+## If the removed state is previous or initial, remove the references.
 func remove_state(state_to_remove: State) -> void:
 	if not states.has(state_to_remove.state_name):
 		push_warning("Error trying to remove state '%s', state not in dictionary!" % state_to_remove.state_name)
@@ -85,12 +84,8 @@ func remove_state(state_to_remove: State) -> void:
 
 	# If we are removing the current state, try to handle it gracefully.
 	if state_to_remove == current_state:
-		if previous_state:
-			change_state(previous_state.state_name)
-		elif initial_state:
-			change_state(initial_state.state_name)
-		else:
-			current_state = null
+		current_state.exit()
+		current_state = null
 
 	# Remove it from the dictionary and disconnect its transition signal
 	states.erase(state_to_remove.state_name)
