@@ -17,5 +17,8 @@ func _ready() -> void:
 
 
 func _on_hit(area: Area2D) -> void:
-	if area is Hurtbox2D:
+	if not area is Hurtbox2D:
+		return
+
+	if not area.in_iframes:
 		hit_hurtbox.emit(area as Hurtbox2D)
