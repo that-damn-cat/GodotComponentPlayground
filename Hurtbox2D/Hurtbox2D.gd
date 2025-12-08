@@ -9,10 +9,28 @@ extends Area2D
 ## HealthComponent that accepts damage
 @export var health: HealthComponent
 
+## Number of seconds to remain invincible after being hit
+@export_range(0.0, INF, 0.01, "hide_slider") var iframes_seconds: float = 0.0
+
+var _iframe_time: float = 0.0
+var _in_iframes: bool = false
+
+
 func _ready() -> void:
 	area_entered.connect(_on_hit)
+	iframes_seconds = abs(iframes_seconds)
+
+
+func _process(delta: float) -> void:
+	if _in_iframes:
+		_iframe_time += delta
+
+	if _iframe_time >= iframes_seconds:
+		_in_iframes = false
+		_iframe_time = 0.0
 
 
 func _on_hit(area: Area2D) -> void:
-	if area is Hitbox2D:
+	if area is Hitbox2D and not _in_iframes:
 		health.damage(area.damage)
+		_in_iframes = true
