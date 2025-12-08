@@ -34,10 +34,6 @@ var current_health: float:
 		set_health(new_health)
 
 
-func _ready() -> void:
-	full_heal()
-
-
 ## Sets health amount to max for full healing
 func full_heal() -> void:
 	current_health = max_health
@@ -78,8 +74,6 @@ func set_health(amount) -> void:
 	var original_health: float = current_health
 
 	_current_health = amount
-
-	# caps overheals and kills you if you're at zero
 	_current_health = clamp(amount, 0, max_health)
 
 	if current_health <= 0:
