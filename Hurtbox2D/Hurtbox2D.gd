@@ -12,8 +12,10 @@ extends Area2D
 ## Number of seconds to remain invincible after being hit
 @export_range(0.0, INF, 0.01, "hide_slider") var iframes_seconds: float = 0.0
 
+## Whether or not the hurtbox is currently in iframes
+var in_iframes: bool = false
+
 var _iframe_time: float = 0.0
-var _in_iframes: bool = false
 
 
 func _ready() -> void:
@@ -22,15 +24,15 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if _in_iframes:
+	if in_iframes:
 		_iframe_time += delta
 
 	if _iframe_time >= iframes_seconds:
-		_in_iframes = false
+		in_iframes = false
 		_iframe_time = 0.0
 
 
 func _on_hit(area: Area2D) -> void:
-	if area is Hitbox2D and not _in_iframes:
+	if area is Hitbox2D and not in_iframes:
 		health.damage(area.damage)
-		_in_iframes = true
+		in_iframes = true
