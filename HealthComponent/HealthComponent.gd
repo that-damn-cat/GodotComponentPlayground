@@ -54,7 +54,7 @@ func damage(amount: float) -> void:
 	current_health -= amount
 
 
-## Restores health
+## Restores health. can_ressurect flag allows healing when dead.
 func heal(amount: float, can_resurrect: bool = false) -> void:
 	if is_dead and not can_resurrect:
 		return
