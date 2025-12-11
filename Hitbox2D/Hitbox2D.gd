@@ -9,7 +9,7 @@ extends Area2D
 signal hit_hurtbox(hurtbox: Hurtbox2D)
 
 ## Amount of damage to deal to collided Hurtbox2D
-@export var damage: int
+@export var damage: float
 
 
 func _ready() -> void:
