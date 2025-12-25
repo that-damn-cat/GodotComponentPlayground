@@ -9,24 +9,18 @@ extends AudioStreamPlayer
 ## Larger values create a larger variance in pitches.
 @export_range(0.0, 0.5, 0.01) var jitter: float = 0.0
 
-## The base pitch scale used as the center point of the random pitches.
-@export var base_pitch_scale: float = 1.0
+@onready var _base_pitch: float = pitch_scale
 
 
-func _ready() -> void:
-	finished.connect(_on_playback_finished)
-
-
-## Play the given audio stream with a randomized pitch.
+## Call this instead of play() to apply pitch jitter.
 func play_jitter(from_position: float = 0.0) -> void:
-	if jitter > 0.0:
-		var pitch_factor = randf_range(-jitter, jitter)
-		pitch_scale = base_pitch_scale * (1.0 + pitch_factor)
-	else:
-		pitch_scale = base_pitch_scale
-
+	pitch_scale = _get_jittered_pitch()
 	play(from_position)
 
 
-func _on_playback_finished() -> void:
-	pitch_scale = base_pitch_scale
+func _get_jittered_pitch() -> float:
+	if jitter <= 0.0:
+		return(_base_pitch)
+
+	var factor := randf_range(-jitter, jitter)
+	return(_base_pitch * (1.0 + factor))
