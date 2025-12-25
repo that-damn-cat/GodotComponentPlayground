@@ -5,10 +5,10 @@ class_name State
 extends Node
 
 ## Emits when this state is requesting a transition to a new state.
-signal transitioned(this_state: State, new_state_name: String)
+signal transitioned(this_state: State, new_state_name: StringName)
 
 ## The state name used to find this state in the StateMachine
-var state_name: String
+@export var state_name: StringName
 
 ## Holds a reference to the StateMachine that controls this State
 var state_machine: StateMachine
@@ -22,7 +22,8 @@ func _ready() -> void:
 	if get_parent() is not StateMachine:
 		push_error("State nodes must be children of a StateMachine Node!")
 
-	state_name = name.to_lower()
+	if state_name == "":
+		state_name = name.to_lower()
 
 
 ## To be implemented by the inheriting node. Called when the state is first entered.
@@ -47,7 +48,7 @@ func physics_update(_delta: float) -> void:
 
 ## Emit the transitioned signal
 func transition_to(new_state_name: String) -> void:
-	transitioned.emit(self, new_state_name)
+	transitioned.emit(self, StringName(new_state_name))
 
 
 func _exit_tree() -> void:

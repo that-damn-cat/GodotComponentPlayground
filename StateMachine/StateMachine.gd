@@ -17,22 +17,35 @@ var states: Dictionary[StringName, State] = { }
 
 ## Current state
 var current_state: State:
+	get:
+		return(_current_state)
 	set(new_state):
-		change_state(new_state.name)
+		_set_state(new_state)
+
+var _current_state: State
 
 ## Name of the current state
-var current_state_name: String:
+var current_state_name: StringName:
 	get:
-		return current_state.name
+		return(current_state.name if current_state else StringName(""))
 
 ## Last running state
 var previous_state: State
 
 ## Name of the previously state
-var previous_state_name: String:
+var previous_state_name: StringName:
 	get:
-		return current_state.name
+		return(previous_state.name if previous_state else StringName(""))
 
+## Whether or not the StateMachine is stateless
+var is_stateless: bool:
+	get:
+		return(current_state == null)
+
+## Inverse of is_stateless
+var has_state: bool:
+	get:
+		return(not is_stateless)
 
 func _enter_tree() -> void:
 	states = { }
@@ -44,7 +57,7 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	if initial_state:
-		_set_state(initial_state)
+		call_deferred("_set_state", initial_state)
 
 	if states.size() == 0:
 		push_warning("StateMachine has no State children at ready!")
@@ -61,7 +74,7 @@ func _physics_process(delta: float) -> void:
 
 
 ## Returns the state object with the given name
-func get_state(state_name: String) -> State:
+func get_state(state_name: StringName) -> State:
 	return(states.get(state_name))
 
 
@@ -77,7 +90,7 @@ func add_state(new_state: State) -> void:
 
 	if states.has(new_state.state_name):
 		push_warning("Duplicate state_name '%s' detected. State being overwritten!" % new_state.state_name)
-		remove_state(new_state)
+		remove_state(states[new_state.state_name])
 
 	states[new_state.state_name] = new_state
 	new_state.transitioned.connect(_on_state_transitioned)
@@ -99,8 +112,7 @@ func remove_state(state_to_remove: State) -> void:
 
 	# If we are removing the current state, try to handle it gracefully.
 	if state_to_remove == current_state:
-		current_state.exit()
-		current_state = null
+		_set_state(null)
 
 	# Remove it from the dictionary and disconnect its transition signal
 	states.erase(state_to_remove.state_name)
@@ -109,11 +121,11 @@ func remove_state(state_to_remove: State) -> void:
 
 ## Returns whether the State Machine has a state with the given name.
 func has_state(state_name: String) -> bool:
-	return states.has(state_name)
+	return(states.has(state_name))
 
 
 ## Forces a state change to the given state name.
-func change_state(new_state_name: String) -> void:
+func change_state(new_state_name: StringName) -> void:
 	var new_state: State = get_state(new_state_name)
 
 	if not new_state:
@@ -123,7 +135,7 @@ func change_state(new_state_name: String) -> void:
 	_set_state(new_state)
 
 
-func _on_state_transitioned(this_state: State, new_state_name: String) -> void:
+func _on_state_transitioned(this_state: State, new_state_name: StringName) -> void:
 	if this_state != current_state:
 		push_warning("State transition signal received from '%s' which is not the current state!" % this_state.state_name)
 		return
@@ -137,17 +149,16 @@ func _on_state_transitioned(this_state: State, new_state_name: String) -> void:
 
 
 func _set_state(new_state: State) -> void:
-	if not new_state:
-		current_state = null
+	if new_state == _current_state:
 		return
 
-	if new_state == current_state:
-		return
+	if _current_state:
+		_current_state.exit()
+		previous_state = _current_state
 
-	if current_state:
-		current_state.exit()
-		previous_state = current_state
+	_current_state = new_state
 
-	current_state = new_state
-	current_state.enter()
-	state_changed.emit(previous_state, current_state)
+	if _current_state:
+		_current_state.enter()
+	
+	state_changed.emit(previous_state, _current_state)
