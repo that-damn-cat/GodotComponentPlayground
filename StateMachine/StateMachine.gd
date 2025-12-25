@@ -42,11 +42,6 @@ var is_stateless: bool:
 	get:
 		return(current_state == null)
 
-## Inverse of is_stateless
-var has_state: bool:
-	get:
-		return(not is_stateless)
-
 func _enter_tree() -> void:
 	states = { }
 
@@ -160,5 +155,5 @@ func _set_state(new_state: State) -> void:
 
 	if _current_state:
 		_current_state.enter()
-	
+
 	state_changed.emit(previous_state, _current_state)
