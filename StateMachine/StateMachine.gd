@@ -9,14 +9,29 @@ signal state_changed(old: State, new: State)
 ## The state set at _ready
 @export var initial_state: State
 
+## A root controlled node for states to reference
+@export var controlled_node: Node
+
 ## Dictionary of currently configured states
 var states: Dictionary[StringName, State] = { }
 
 ## Current state
-var current_state: State
+var current_state: State:
+	set(new_state):
+		change_state(new_state.name)
+
+## Name of the current state
+var current_state_name: String:
+	get:
+		return current_state.name
 
 ## Last running state
 var previous_state: State
+
+## Name of the previously state
+var previous_state_name: String:
+	get:
+		return current_state.name
 
 
 func _enter_tree() -> void:
@@ -110,7 +125,7 @@ func change_state(new_state_name: String) -> void:
 
 func _on_state_transitioned(this_state: State, new_state_name: String) -> void:
 	if this_state != current_state:
-		push_warning("State transition signal received from a state '%s' which is not the current state!" % this_state.state_name)
+		push_warning("State transition signal received from '%s' which is not the current state!" % this_state.state_name)
 		return
 
 	var new_state: State = get_state(new_state_name)

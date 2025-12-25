@@ -8,15 +8,21 @@ extends Node
 signal transitioned(this_state: State, new_state_name: String)
 
 ## The state name used to find this state in the StateMachine
-@export var state_name: String = name.to_lower()
+var state_name: String
 
 ## Holds a reference to the StateMachine that controls this State
 var state_machine: StateMachine
+
+var is_active: bool:
+	get:
+		return(state_machine.current_state == self)
 
 
 func _ready() -> void:
 	if get_parent() is not StateMachine:
 		push_error("State nodes must be children of a StateMachine Node!")
+
+	state_name = name.to_lower()
 
 
 ## To be implemented by the inheriting node. Called when the state is first entered.
