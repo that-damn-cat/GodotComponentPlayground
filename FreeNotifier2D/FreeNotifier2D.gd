@@ -4,13 +4,16 @@
 class_name FreeNotifier2D
 extends VisibleOnScreenNotifier2D
 
-var _wasVisible: bool = false
 @onready var _parent: Node = get_parent()
+var _was_visible: bool = false
 
-func _process(_delta: float) -> void:
-	if not is_on_screen():
-		if _wasVisible:
-			_parent.queue_free()
-	else:
-		if not _wasVisible:
-			_wasVisible = true
+func _ready() ->  void:
+	screen_entered.connect(_on_screen_entered)
+	screen_exited.connect(_on_screen_exited)
+
+func _on_screen_entered() -> void:
+	_was_visible = true
+
+func _on_screen_exited() -> void:
+	if _was_visible:
+		_parent.call_deferred("queue_free")
