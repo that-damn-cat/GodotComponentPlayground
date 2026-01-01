@@ -6,6 +6,22 @@ extends Node
 ## Emitted when a state transition occurs
 signal state_changed(old: State, new: State)
 
+## Whether or not this state machine is running
+@export var enabled: bool = true:
+	get:
+		return(enabled)
+	set(value):
+		if not value:
+			_last_enabled_state = current_state
+			_last_previous_state = previous_state
+			_set_state(null)
+		else:
+			_set_state(_last_enabled_state)
+			previous_state = _last_previous_state
+		enabled = value
+var _last_enabled_state: State
+var _last_previous_state: State
+
 ## The state set at _ready
 @export var initial_state: State
 
@@ -59,11 +75,17 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if not enabled:
+		return
+
 	if current_state:
 		current_state.update(delta)
 
 
 func _physics_process(delta: float) -> void:
+	if not enabled:
+		return
+
 	if current_state:
 		current_state.physics_update(delta)
 
@@ -121,6 +143,9 @@ func has_state(state_name: String) -> bool:
 
 ## Forces a state change to the given state name.
 func change_state(new_state_name: StringName) -> void:
+	if not enabled:
+		return
+
 	var new_state: State = get_state(new_state_name)
 
 	if not new_state:
