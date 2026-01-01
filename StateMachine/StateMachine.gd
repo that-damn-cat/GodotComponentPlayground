@@ -15,10 +15,11 @@ signal state_changed(old: State, new: State)
 			_last_enabled_state = current_state
 			_last_previous_state = previous_state
 			_set_state(null)
+			enabled = value
 		else:
+			enabled = value
 			_set_state(_last_enabled_state)
 			previous_state = _last_previous_state
-		enabled = value
 var _last_enabled_state: State
 var _last_previous_state: State
 
@@ -169,6 +170,9 @@ func _on_state_transitioned(this_state: State, new_state_name: StringName) -> vo
 
 
 func _set_state(new_state: State) -> void:
+	if not enabled:
+		return
+
 	if new_state == _current_state:
 		return
 
