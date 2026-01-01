@@ -27,7 +27,7 @@ var _current_state: State
 ## Name of the current state
 var current_state_name: StringName:
 	get:
-		return(current_state.name if current_state else StringName(""))
+		return(current_state.state_name if current_state else StringName(""))
 
 ## Last running state
 var previous_state: State
@@ -35,7 +35,7 @@ var previous_state: State
 ## Name of the previously state
 var previous_state_name: StringName:
 	get:
-		return(previous_state.name if previous_state else StringName(""))
+		return(previous_state.state_name if previous_state else StringName(""))
 
 ## Whether or not the StateMachine is stateless
 var is_stateless: bool:
