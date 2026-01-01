@@ -17,7 +17,7 @@ signal iframes_end
 
 ## Whether or not the hurtbox is currently in iframes
 var in_iframes: bool = false
-var _iframe_time: float = 0.0
+var _iframe_time_remaining: float = 0.0
 
 
 func _ready() -> void:
@@ -27,12 +27,10 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if in_iframes:
-		_iframe_time += delta
+		_iframe_time_remaining -= delta
 
-		if _iframe_time >= iframes_seconds:
-			in_iframes = false
-			_iframe_time = 0.0
-			iframes_end.emit()
+		if _iframe_time_remaining <= 0.0:
+			_disable_iframes()
 
 
 func _on_hit(area: Area2D) -> void:
@@ -41,6 +39,18 @@ func _on_hit(area: Area2D) -> void:
 
 	if area is Hitbox2D:
 		health.damage(area.damage)
-		in_iframes = true
-		_iframe_time = 0.0
-		iframes_begin.emit()
+		_enable_iframes()
+
+
+func _enable_iframes() -> void:
+	in_iframes = true
+	_iframe_time_remaining = iframes_seconds
+	iframes_begin.emit()
+	set_deferred("monitorable", false)
+	set_deferred("monitoring", false)
+
+func _disable_iframes() -> void:
+	in_iframes = false
+	iframes_end.emit()
+	set_deferred("monitorable", true)
+	set_deferred("monitoring", true)
